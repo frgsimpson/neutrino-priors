@@ -1,0 +1,12 @@
+These are the posterior distributions on the sum of the neutrino masses, as derived from measurements on neutrino oscillations.
+They may be suitable as cosmological priors.
+
+In each file the first column is an array of sigma = m1 + m2 + m3 (eV)
+The second column holds the corresponding p(sigma) values
+
+sigma_ih.dat: The posterior on sigma given the inverted hierarchy
+sigma_nh.dat: The posterior on sigma given the normal hierarchy
+sigma_wt.dat: The weighted average of the two hierarchies
+
+
+
