@@ -1,12 +1,28 @@
-These are the posterior distributions on the sum of the neutrino masses, as derived from measurements on neutrino oscillations.
-They may be suitable as cosmological priors.
+——————————
+SUMMARY
+——————————
+Posterior probability distributions for the sum of the neutrino masses, as derived from measurements of neutrino oscillations, as outlined in arXiv:1703.03425. These are intended for use as priors when analysing new data. 
 
-In each file the first column is an array of sigma = m1 + m2 + m3 (eV)
-The second column holds the corresponding p(sigma) values
+——————————
+FILE FORMAT
+——————————
 
-sigma_ih.dat: The posterior on sigma given the inverted hierarchy
-sigma_nh.dat: The posterior on sigma given the normal hierarchy
-sigma_wt.dat: The weighted average of the two hierarchies
+The first column holds an array of bin centres, corresponding to the sum of the three mass eigenstates: sigma = m1 + m2 + m3 (eV)
+The second column holds the corresponding p(sigma) values for each bin.
+
+——————————
+DATA
+——————————
+
+sigma_wt.dat: 
+
+The posterior distribution on sigma when utilising three pieces of non-cosmological data (solar mass splitting; atmospheric mass splitting; an upper bound of 6.9eV on sigma), as summarised in Section 3 of arXiv:1703.03425. The distribution is computed as a weighted average of two conditional distributions p(sigma | inverted hierarchy) and p(sigma | normal hierarchy). The two conditional distributions are also available separately, as sigma_ih.dat and sigma_nh.dat respectively.
+
+This is appropriate for use as a prior when attempting to measure sigma with cosmological data.
 
 
+sigma_cmb_sdss_bao.dat: 
 
+The posterior distribution on sigma when utilising both cosmological and non-cosmological data. The cosmological analysis was performed by Cuesta, Niro, & Verde (2016), and is a combination of the cosmic microwave background (Planck) and large scale structure (SDSS/BOSS). Note that the quantity presented in Cuesta, Niro, & Verde (2016) is formally a posterior distribution, p(sigma | D_cosmo), but since the prior used was uniform, we can treat it here as the marginal likelihood p(D_cosmo|sigma). We then express p(sigma | D_cosmo, D_oscillations) as proportional to the product of  p(D_cosmo | sigma) and p(sigma | D_oscillations).
+
+This is appropriate for use as a prior when sigma (the sum of neutrino masses) is not well constrained by the data, but represents a nuisance parameter to be marginalised over.
