@@ -1,0 +1,141 @@
+from scipy.special import logsumexp
+import numpy as np
+
+from neutrinos.constraints import NeutrinoConstraint
+from neutrinos.hierarchies import Hierarchy
+
+
+def make_normalised_samples(n_samples: int):
+    """ Create a base set of random samples drawn from a Gaussian prior to represent the three neutrino masses. """
+
+    sample_shape = (n_samples, 3)
+    unit_sorted_samples = np.random.normal(loc=0., scale=1., size=sample_shape)
+    unit_sorted_samples.sort(axis=1)
+    return unit_sorted_samples
+
+
+def get_sample_pseudorandom_data(mu, sigma, unit_sorted_samples):
+    """ Returns samples from lognormal with params mu and sigma.
+    Mu is median value in eV.Draw samples from prior using log mu
+    Seeded by draws from a unit normal distribution to avoid repeated computation.
+    """
+
+    log_mass_samples = unit_sorted_samples * sigma + np.log(mu)
+
+    return np.exp(log_mass_samples)
+
+
+def get_sample_data(mu, sigma, N_SAMPLES):
+    """ Returns samples from lognormal with params mu and sigma.
+    Mu is median value in eV.Draw samples from prior using log mu
+    """
+
+    sample_shape = (N_SAMPLES, 3)
+    logSample = np.random.normal(loc=np.log(mu), scale=sigma, size=sample_shape)
+
+    logSample.sort(axis=1)   # Put masses in order
+    return np.exp(logSample)
+
+
+def get_loglikelihood_from_samples(sample, data: NeutrinoConstraint, hierarchy: Hierarchy):
+    """ Monte carlo estimate of p(data | mu, sigma) Perhaps use nested sampling? Can be awkward for hyperpriors
+     Space is (mu, sigma, m1, m2, m3) and pretty narrow permitted region. But NS might work.  """
+
+    if hierarchy == Hierarchy.Normal:
+        msqr1 = sample[:, 1] ** 2 - sample[:, 0] ** 2  # M ^ 2 - S ^ 2 ie m2 - m1
+        msqr2 = sample[:, 2] ** 2 - sample[:, 1] ** 2  # L ^ 2 - M ^ 2 ie m3 - m2
+    else:
+        msqr1 = sample[:, 2] ** 2 - sample[:, 1] ** 2  # L ^ 2 - S ^ 2 % m2 - m3
+        msqr2 = sample[:, 2] ** 2 - sample[:, 0] ** 2  # L ^ 2 - M ^ 2 % m2 - m1
+
+    mass_sum = np.sum(sample, axis=1)
+    n_samples = sample.shape[0]
+
+    loglikeli_array = log_pdf(msqr1, data.m21_sqr, data.m21_sqr_error)   # Smaller mass gap
+    loglikeli_array += log_pdf(msqr2, data.m31_sqr, data.m31_sqr_error)  # Larger mass gap
+    loglikeli_array += log_pdf(mass_sum, data.sum_of_masses_offset, data.sum_of_masses_one_sigma)
+
+    all_likeli = logsumexp(loglikeli_array)
+
+    return all_likeli - np.log(n_samples)  # p(D|M) ~ 1/N sum_samples p(D|M, sample) so log p is logsumexp(liklei) - log N
+
+
+def get_prior_from_samples(samples, bin_edges, plot_type):
+    """ Counts the samples in each mass bin. """
+
+    if plot_type == 'heavymedium':
+        m1 = samples[:, 1]
+        m2 = samples[:, 2]
+    elif plot_type == 'heavylight':
+        m1 = samples[:, 0]
+        m2 = samples[:, 2]
+    elif plot_type == 'mediumlight':
+        m1 = samples[:, 0]
+        m2 = samples[:, 1]
+    elif plot_type == 'normalised':
+        m1 = samples[:, 0] / samples[:, 2]
+        m2 = samples[:, 1] / samples[:, 2]
+    else:
+        raise NotImplementedError('Unknown plot type', plot_type)
+
+    hist, m1edges, m2edges = np.histogram2d(m1, m2, bins=bin_edges)
+    return hist
+
+
+def log_pdf(measurement, data, error) -> np.ndarray:
+    """ Faster than using official logpdf routines. """
+    return -0.5*((measurement - data)/error) ** 2 - np.log(error) - 0.5 * np.log(2 * np.pi)
+
+# def calc_mass_likelihoods(sampleArray, DATA):
+
+    # Add up all the     likelihood     values
+
+    # if (COLLECT_MASS_LIKELI)
+    #     massLikeli = calc_mass_likeli(likeliArray, sampleArray.masses);
+    # end
+
+
+    # function
+    # massLikeli = calc_mass_likeli(likeliArray, massArray)
+    #
+    # [binEdges, NLIKELI_BINS] = get_mass_bins();
+    #
+    # massLikeli.likeli = zeros(3, NLIKELI_BINS);
+    #
+    # for i=1:3
+    # [N, edges, bin] = histcounts(massArray(i,:), binEdges);
+    # massLikeli.likeli(i,:) = accumarray(bin(bin > 0)
+    # ', likeliArray(bin>0)', [NLIKELI_BINS 1]);
+    # end
+    #
+    # massLikeli.mass = edges;
+    #
+    # massLikeli.likeli(isnan(massLikeli.likeli)) = 0;
+    # % if sum(isnan(massLikeli.likeli(: ))) > 0
+    # % here = 1
+    # % end
+    #
+    # end
+    #
+    # function
+    # sigmaLikeli = calc_sigma_likeli(likeliArray, sigmaArray)
+    #
+    # % RES_FACTOR = 200; % 0.005
+    # eV
+    # resolution
+    # [binEdges, NLIKELI_BINS] = get_sigma_bins();
+    #
+    # % [N, edges, bin] = histcounts(RES_FACTOR * sigmaArray, 'BinMethod', 'integers');
+    # [N, edges, bin] = histcounts(sigmaArray, binEdges);
+    #
+    # sigmaLikeli.likeli = accumarray(bin(bin > 0)
+    # ', likeliArray(bin>0)', [NLIKELI_BINS 1]);
+    # sigmaLikeli.sigma = edges;
+    #
+    # end
+    # % y = normpdf(x, mu, sigma)
+    # function
+    # likeliArray = calc_likeli(measurement, data, error)
+    #
+    # likeliArray = exp(-(measurement - data). ^ 2. / (2 * error. ^ 2));
+    #
