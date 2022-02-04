@@ -14,10 +14,12 @@ class LikelihoodGrid:
     muArray: np.array
     loglikelihood: np.ndarray
     n_samples: int
-    prior_power: int = 1
+    prior_power: int = 0
 
     @property
     def logprior(self):
+        """ Add a prior of the form sigma^-(1+prior_power).
+         1 comes from the 1/sigma prior due to the log distribution of sigmaArray """
         sigma_prior = -self.prior_power * self.sigmaArray
         n_mu = len(self.muArray)
         return np.tile(sigma_prior, (n_mu, 1))
