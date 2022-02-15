@@ -67,6 +67,8 @@ def make_plots(grids: List[LikelihoodGrid], sum_of_masses_one_sigma):
         # plt.yticks(np.log(grid.sigmaArray))
 
     fig.colorbar(im, ax=axes.ravel().tolist(), fraction=0.02, pad=0.04)
+
+    # Adding an outer axes allows for a shared xlabel
     fig.add_subplot(111, frameon=False)
     plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
     plt.xlabel('log ($\mu$ / eV)', labelpad=-60)

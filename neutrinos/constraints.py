@@ -46,3 +46,25 @@ def load_neutrino_constraints(sum_of_masses_one_sigma: Optional[float] = None,
         )
 
     return constraints
+
+
+def load_pure_sum_masses(sum_of_masses_one_sigma: float = 0.060, sum_of_masses_offset: float = -0.026):
+    return NeutrinoConstraint(
+        m21_sqr=7.42e-5,
+        m31_sqr=2.5e-3,
+        m21_sqr_error=1e10,
+        m31_sqr_error=1e10,
+        sum_of_masses_offset=sum_of_masses_offset,
+        sum_of_masses_one_sigma=sum_of_masses_one_sigma,
+    )
+
+
+def load_pure_splittings():
+    return NeutrinoConstraint(
+            m21_sqr=7.42e-5,
+            m31_sqr=2.5e-3,
+            m21_sqr_error=0.21e-5,
+            m31_sqr_error=0.027e-3,
+            sum_of_masses_offset=0.,
+            sum_of_masses_one_sigma=1e10,
+        )
