@@ -41,6 +41,16 @@ def get_loglikelihood_from_samples(sample, data: NeutrinoConstraint, hierarchy: 
     """ Monte carlo estimate of p(data | mu, sigma) Perhaps use nested sampling? Can be awkward for hyperpriors
      Space is (mu, sigma, m1, m2, m3) and pretty narrow permitted region. But NS might work.  """
 
+    loglikeli_array = get_loglikelihood_per_sample(sample, data, hierarchy)
+    n_samples = sample.shape[0]
+
+    all_likeli = logsumexp(loglikeli_array)
+
+    return all_likeli - np.log(n_samples)  # p(D|M) ~ 1/N sum_samples p(D|M, sample) so log p is logsumexp(liklei) - log N
+
+
+def get_loglikelihood_per_sample(sample, data: NeutrinoConstraint, hierarchy: Hierarchy):
+
     if hierarchy == Hierarchy.Normal:
         msqr1 = sample[:, 1] ** 2 - sample[:, 0] ** 2  # M ^ 2 - S ^ 2 ie m2 - m1
         msqr2 = sample[:, 2] ** 2 - sample[:, 1] ** 2  # L ^ 2 - M ^ 2 ie m3 - m2
@@ -49,16 +59,12 @@ def get_loglikelihood_from_samples(sample, data: NeutrinoConstraint, hierarchy: 
         msqr2 = sample[:, 2] ** 2 - sample[:, 0] ** 2  # L ^ 2 - M ^ 2 % m2 - m1
 
     mass_sum = np.sum(sample, axis=1)
-    n_samples = sample.shape[0]
 
     loglikeli_array = log_pdf(msqr1, data.m21_sqr, data.m21_sqr_error)   # Smaller mass gap
     loglikeli_array += log_pdf(msqr2, data.m31_sqr, data.m31_sqr_error)  # Larger mass gap
     loglikeli_array += log_pdf(mass_sum, data.sum_of_masses_offset, data.sum_of_masses_one_sigma)
 
-    all_likeli = logsumexp(loglikeli_array)
-
-    return all_likeli - np.log(n_samples)  # p(D|M) ~ 1/N sum_samples p(D|M, sample) so log p is logsumexp(liklei) - log N
-
+    return loglikeli_array
 
 def get_prior_from_samples(samples, bin_edges, plot_type):
     """ Counts the samples in each mass bin. """
