@@ -16,6 +16,7 @@ class NeutrinoConstraint:
 
 
 def load_neutrino_constraints(sum_of_masses_one_sigma: Optional[float] = None,
+                              sum_of_masses_offset: Optional[float] = 0.,
                               new_splittings: bool = True) -> NeutrinoConstraint:
     """ Constraints from particle physics and cosmology. """
 
@@ -23,8 +24,6 @@ def load_neutrino_constraints(sum_of_masses_one_sigma: Optional[float] = None,
         # Use EBOSS Table 8 of https://arxiv.org/pdf/2007.08991.pdf
         sum_of_masses_offset = -0.026
         sum_of_masses_one_sigma = 0.060
-    else:
-        sum_of_masses_offset = 0.
 
     if new_splittings:
         constraints = NeutrinoConstraint(
