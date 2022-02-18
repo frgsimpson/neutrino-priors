@@ -8,8 +8,8 @@ from neutrinos.constraints import load_neutrino_constraints
 from neutrinos.hierarchies import Hierarchy
 from scripts.make_mu_sigma_figure import print_evidence, calculate_log_evidence
 
-TWO_SIGMA_LIMITS = [0.8, 0.12, 0.102, 0.099, 0.089]
-OFFSETS = [0, 0, 0, 0, 0]
+TWO_SIGMA_LIMITS = [0.8, 0.12, 0.102, 0.099, 0.089, 0.099]
+OFFSETS = [0, 0, 0, 0, 0, 0.04]
 DELTA_CHI2_BOOST = 33
 
 

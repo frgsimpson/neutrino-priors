@@ -28,7 +28,8 @@ def get_savefile_name(hierarchy: Hierarchy, data: NeutrinoConstraint, n_samples:
     """ Store data in file depending on the hierarchy, sum constraint, """
 
     hierarchy_str = 'nh' if hierarchy == Hierarchy.Normal else 'ih'
-    sum_str = str(data.sum_of_masses_one_sigma)[:5] # Max 5 sig fig
+    sum_str = str(data.sum_of_masses_one_sigma)[:5]  # Max 5 sig fig
     sample_str = str(n_samples)
+    prefix = '' if data.sum_of_masses_offset == 0.else str(data.sum_of_masses_offset) + '_'
 
-    return 'likeli_' +  hierarchy_str + '_' + sum_str + '_' + sample_str
+    return prefix + 'likeli_' + hierarchy_str + '_' + sum_str + '_' + sample_str
