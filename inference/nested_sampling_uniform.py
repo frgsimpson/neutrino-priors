@@ -44,16 +44,17 @@ def evaluate_log_likelihood_of_parameters(param_vector):
 sampler = dy.NestedSampler(loglikelihood=evaluate_log_likelihood_of_parameters,
                            prior_transform=prior_map,
                            ndim=3,
-                           nlive=500,
+                           nlive=1_000,
                            bound='multi',
                            sample='auto')
 
 sampler.run_nested(dlogz=0.01, maxiter=100_000)
 sampler.results.summary()
 
-# iter: 11549 | +500 | bound: 77 | nc: 1 | ncall: 60584 | eff(%): 19.888 | loglstar:   -inf < 22.636 <    inf | logz:  4.172 +/-    nan | dlogz:  0.000 >  0.010
-# nlive: 500
-# niter: 11840
-# ncall: 49225
-# eff(%): 25.069
-# logz:  3.589
+# iter: 23487 | +1000 | bound: 65 | nc: 1 | ncall: 102516 | eff(%): 23.886 | loglstar:   -inf < 22.634 <    inf | logz:  3.769 +/-    nan | dlogz:  0.000 >  0.010                                      Summary
+# =======
+# nlive: 1000
+# niter: 23487
+# ncall: 102516
+# eff(%): 23.886
+# logz:  3.769

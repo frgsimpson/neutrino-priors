@@ -4,6 +4,7 @@ from dataclasses import dataclass
 import numpy as np
 
 N_DEFAULT_SAMPLES = 100_000
+N_MASS_BINS = 100
 
 
 @dataclass
@@ -15,6 +16,8 @@ class LikelihoodGrid:
     loglikelihood: np.ndarray
     n_samples: int
     prior_power: int = 0
+    mass_posterior = np.zeros((N_MASS_BINS, 4))  # Final column is for the sum of masses
+    mass_log_bins = np.linspace(-7, 0, N_MASS_BINS)
 
     @property
     def logprior(self):
