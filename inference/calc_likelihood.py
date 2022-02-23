@@ -7,7 +7,7 @@ from inference.grids import get_default_grid, LikelihoodGrid, N_DEFAULT_SAMPLES
 from inference.sampling import get_sample_pseudorandom_data, make_normalised_samples, \
     get_prior_from_samples, get_log_sample_data, get_loglikelihood_per_sample
 from neutrinos.hierarchies import Hierarchy
-from utils.loading import load_posterior, save_posterior
+from inference.utils import load_posterior, save_posterior
 
 
 def get_likelihood_mu_sigma(data, hierarchy: Hierarchy, likeli: Optional[LikelihoodGrid] = None):

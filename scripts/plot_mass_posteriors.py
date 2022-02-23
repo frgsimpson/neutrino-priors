@@ -2,11 +2,10 @@ from matplotlib import pyplot as plt
 import numpy as np
 
 from inference.calc_likelihood import get_posterior
+from inference.utils import print_figure
 from neutrinos.constraints import load_neutrino_constraints
 from neutrinos.hierarchies import Hierarchy
 
-
-N_MASS_BINS = 60
 SUM_OF_MASSES_ONE_SIGMA = np.array([0.089, 0.099, 0.12]) * 0.5
 SUM_OF_MASSES_OFFSET = [0, 0, 0]  # Corresponding offsets
 LINESTYLES = ['-', '--', ':']
@@ -33,18 +32,7 @@ def make_mass_plot():
             axes[i].set_xlabel('m/eV')
             axes[i].set_ylabel('p(m)')
 
-    print_figure()
+    print_figure('mass_posteriors')
     plt.show()
-
-
-def print_figure():
-
-    filename = './plots/mass_posteriors.png'
-    plt.savefig(filename,
-                dpi=300,
-                bbox_inches='tight',
-                pad_inches=0)
-    print('Saved to file:', filename)
-
 
 make_mass_plot()

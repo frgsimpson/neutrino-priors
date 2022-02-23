@@ -4,13 +4,11 @@ import dynesty as dy
 import numpy as np
 
 from inference.sampling import log_pdf
-from inference.utils import load_dummy_constraints
 from neutrinos.constraints import load_neutrino_constraints
 from neutrinos.hierarchies import Hierarchy
 
 MAX_MASS = 1.0
-DUMMY_DATA = False
-DATA = load_dummy_constraints() if DUMMY_DATA else load_neutrino_constraints()
+DATA = load_neutrino_constraints()
 HIERARCHY = Hierarchy.Normal
 
 

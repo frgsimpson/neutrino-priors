@@ -6,6 +6,7 @@ from scipy.special import logsumexp
 from skimage.filters import gaussian as gaussian_filter
 
 from inference.calc_likelihood import get_posterior
+from inference.utils import print_figure
 from neutrinos.constraints import load_neutrino_constraints
 from inference.grids import LikelihoodGrid
 from neutrinos.hierarchies import Hierarchy
@@ -74,7 +75,8 @@ def make_plots(grids: List[LikelihoodGrid], sum_of_masses_one_sigma):
     plt.ylabel('log $\sigma$')
     plt.grid(False)
 
-    print_figure(sum_of_masses_one_sigma)
+    filename = 'mu_sigma_' + str(sum_of_masses_one_sigma)
+    print_figure(filename)
     plt.show()
 
 
@@ -83,20 +85,9 @@ def calculate_log_evidence(grid: LikelihoodGrid):
     return logsumexp(grid.logposterior)
 
 
-def print_figure(mass_bound):
-
-    filename = './plots/mu_sigma_' + str(mass_bound) + '.png'
-    plt.savefig(filename,
-                dpi=300,
-                bbox_inches='tight',
-                pad_inches=0)
-    print('Saved to file:', filename)
-
-
 def apply_smoothing(image, smooth_sigma):
     return gaussian_filter(image, sigma=smooth_sigma, mode='nearest', truncate=KERNEL_WIDTH)
 
 
 if __name__ == '__main__':
     make_mu_sigma_figures()
-

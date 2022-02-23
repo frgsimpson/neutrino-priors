@@ -1,6 +1,8 @@
 """ Routines for saving and loading the computationally-intensive likelihood grids. """
 import pickle
 
+from matplotlib import pyplot as plt
+
 from neutrinos.constraints import NeutrinoConstraint
 from inference.grids import LikelihoodGrid
 from neutrinos.hierarchies import Hierarchy
@@ -35,3 +37,12 @@ def get_savefile_name(hierarchy: Hierarchy, data: NeutrinoConstraint, n_samples:
     path = './likelihoods/'
 
     return path + prefix + 'likeli_' + hierarchy_str + '_' + sum_str + '_' + sample_str
+
+
+def print_figure(filename: str, path: str = './plots/'):
+
+    plt.savefig(path + filename,
+                dpi=300,
+                bbox_inches='tight',
+                pad_inches=0)
+    print('Saved to file:', filename)
