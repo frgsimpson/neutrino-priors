@@ -30,6 +30,8 @@ def get_savefile_name(hierarchy: Hierarchy, data: NeutrinoConstraint, n_samples:
     hierarchy_str = 'nh' if hierarchy == Hierarchy.Normal else 'ih'
     sum_str = str(data.sum_of_masses_one_sigma)[:5]  # Max 5 sig fig
     sample_str = str(n_samples)
-    prefix = '' if data.sum_of_masses_offset == 0.else str(data.sum_of_masses_offset) + '_'
 
-    return prefix + 'likeli_' + hierarchy_str + '_' + sum_str + '_' + sample_str
+    prefix = '' if data.sum_of_masses_offset == 0.else str(data.sum_of_masses_offset) + '_'
+    path = './likelihoods/'
+
+    return path + prefix + 'likeli_' + hierarchy_str + '_' + sum_str + '_' + sample_str

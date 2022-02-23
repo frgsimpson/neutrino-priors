@@ -58,7 +58,6 @@ def make_plots(grids: List[LikelihoodGrid], sum_of_masses_one_sigma):
         extent = [np.log(grid.muArray[0]), np.log(grid.muArray[-1]), np.log(grid.sigmaArray[0]), np.log(grid.sigmaArray[-1])]
         im = ax.imshow(log_likeli.T,  cmap='hot', vmin=minval, vmax=vmax, origin='lower',  extent=extent, aspect=0.6)
 
-
         # todo Fix the ticks
         # x_indices =
         # ax.set_xticks([20, 40, 60, 80])
@@ -100,5 +99,4 @@ def apply_smoothing(image, smooth_sigma):
 
 if __name__ == '__main__':
     make_mu_sigma_figures()
-
 

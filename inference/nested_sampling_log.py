@@ -4,6 +4,7 @@ import dynesty as dy
 import numpy as np
 from scipy.stats import norm
 from inference.sampling import log_pdf
+from inference.utils import load_dummy_constraints
 from neutrinos.constraints import load_neutrino_constraints
 from neutrinos.hierarchies import Hierarchy
 
@@ -14,7 +15,8 @@ MAX_LOG_SIGMA = 2
 MIN_LOG_SIGMA = -5
 
 HIERARCHY = Hierarchy.Normal
-DATA = load_neutrino_constraints()
+DUMMY_DATA = False
+DATA = load_dummy_constraints() if DUMMY_DATA else load_neutrino_constraints()
 
 
 def prior_map(cube):

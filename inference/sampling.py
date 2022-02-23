@@ -25,8 +25,8 @@ def get_sample_pseudorandom_data(mu, sigma, unit_sorted_samples):
     return np.exp(log_mass_samples)
 
 
-def get_sample_data(mu, sigma, N_SAMPLES):
-    """ Returns samples from lognormal with params mu and sigma.
+def get_log_sample_data(mu, sigma, N_SAMPLES):
+    """ Returns log samples from lognormal with params mu and sigma.
     Mu is median value in eV.Draw samples from prior using log mu
     """
 
@@ -34,6 +34,15 @@ def get_sample_data(mu, sigma, N_SAMPLES):
     logSample = np.random.normal(loc=np.log(mu), scale=sigma, size=sample_shape)
 
     logSample.sort(axis=1)   # Put masses in order
+    return logSample
+
+
+def get_sample_data(mu, sigma, N_SAMPLES):
+    """ Returns samples from lognormal with params mu and sigma.
+    Mu is median value in eV.Draw samples from prior using log mu
+    """
+
+    logSample = get_log_sample_data(mu, sigma, N_SAMPLES)
     return np.exp(logSample)
 
 
@@ -65,6 +74,7 @@ def get_loglikelihood_per_sample(sample, data: NeutrinoConstraint, hierarchy: Hi
     loglikeli_array += log_pdf(mass_sum, data.sum_of_masses_offset, data.sum_of_masses_one_sigma)
 
     return loglikeli_array
+
 
 def get_prior_from_samples(samples, bin_edges, plot_type):
     """ Counts the samples in each mass bin. """
