@@ -13,7 +13,7 @@ COLOURS = ['b', 'r', 'k']
 plt.style.use("../jcappaper.mplstyle")
 
 
-def make_sum_of_masses_plot():
+def make_sum_of_masses_plot(log_mass: bool = False):
     """ Plot the posterior distribution for the sum of neutrino masses for two hierarchies and
      a range of upper bounds."""
 
@@ -28,10 +28,17 @@ def make_sum_of_masses_plot():
             likeligrid = get_posterior(hierarchy, data)
 
             y = likeligrid.mass_posterior[:, 3]
-            plt.plot(likeligrid.mass_log_bins, y, linestyle=linestyle, color=COLOURS[j])
+            if log_mass:
+                plt.plot(likeligrid.mass_log_bins, y, linestyle=linestyle, color=COLOURS[j])
+            else:
+                mass = np.exp(likeligrid.mass_log_bins)
+                y /= mass  # p(m) = p(log m) / m
+                y /= np.sum(y)
+                plt.plot(mass, y, linestyle=linestyle, color=COLOURS[j])
 
-            plt.xlabel('m/eV')
-            plt.ylabel('p(m)')
+            plt.xlabel('$\Sigma_\\nu$ [eV]')
+            plt.ylabel('p($\Sigma_\\nu$ )')
+            plt.xlim([0, 0.3])
 
     print_figure('sum_of_masses_posteriors')
     plt.show()

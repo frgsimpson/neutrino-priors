@@ -13,7 +13,7 @@ COLOURS = ['b', 'r', 'k']
 plt.style.use("../jcappaper.mplstyle")
 
 
-def make_mass_plot():
+def make_mass_plot(log_mass: bool = False):
 
     data = load_neutrino_constraints()
     fig, axes = plt.subplots(nrows=1, ncols=2, sharex=True, sharey=False, figsize=(12, 6))
@@ -28,10 +28,18 @@ def make_mass_plot():
 
             for m in range(3):
                 y = likeligrid.mass_posterior[:, m]
-                axes[i].plot(likeligrid.mass_log_bins, y, linestyle=linestyle, color=COLOURS[m])
 
-            axes[i].set_xlabel('m/eV')
-            axes[i].set_ylabel('p(m)')
+                if log_mass:
+                    axes[i].plot(likeligrid.mass_log_bins, y, linestyle=linestyle, color=COLOURS[m])
+                else:
+                    mass = np.exp(likeligrid.mass_log_bins)
+                    y /= mass  # p(m) = p(log m) / m
+                    y /= np.sum(y)
+                    axes[i].plot(mass, y, linestyle=linestyle, color=COLOURS[m])
+
+        axes[i].set_xlabel('m/eV')
+        axes[i].set_ylabel('p(m)')
+        axes[i].set_xlim([0, 0.09])
 
     print_figure('mass_posteriors')
     plt.show()
