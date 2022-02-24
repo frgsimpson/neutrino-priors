@@ -15,6 +15,7 @@ KERNEL_WIDTH = 5.  # How many sigma to smooth across
 SMOOTH_SIGMA = 2   # How wide to smooth
 COLOR_RANGE = 10   # How far does the log likelihood fall before it becomes black?
 COLOR_BUFFER = 0.  # how much of a gap between white and the colour of the max value
+plt.style.use("../jcappaper.mplstyle")
 
 
 def make_mu_sigma_figures(sum_of_masses_one_sigma=0.0445):

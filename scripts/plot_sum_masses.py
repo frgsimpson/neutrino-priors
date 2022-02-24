@@ -10,6 +10,7 @@ SUM_OF_MASSES_ONE_SIGMA = np.array([0.089, 0.099, 0.12]) * 0.5
 SUM_OF_MASSES_OFFSET = [0, 0, 0]  # Corresponding offsets for each upper bound
 LINESTYLES = ['-', '--', ':']
 COLOURS = ['b', 'r', 'k']
+plt.style.use("../jcappaper.mplstyle")
 
 
 def make_sum_of_masses_plot():
@@ -17,7 +18,6 @@ def make_sum_of_masses_plot():
      a range of upper bounds."""
 
     data = load_neutrino_constraints()
-    plt.figure(figsize=(12, 6))
 
     for i, hierarchy in enumerate(Hierarchy):
         for j, upper_bound in enumerate(SUM_OF_MASSES_ONE_SIGMA):

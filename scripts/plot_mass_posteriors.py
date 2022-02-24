@@ -10,6 +10,7 @@ SUM_OF_MASSES_ONE_SIGMA = np.array([0.089, 0.099, 0.12]) * 0.5
 SUM_OF_MASSES_OFFSET = [0, 0, 0]  # Corresponding offsets
 LINESTYLES = ['-', '--', ':']
 COLOURS = ['b', 'r', 'k']
+plt.style.use("../jcappaper.mplstyle")
 
 
 def make_mass_plot():
