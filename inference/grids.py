@@ -18,6 +18,7 @@ class LikelihoodGrid:
     prior_power: int = 0
     mass_posterior = np.zeros((N_MASS_BINS, 4))  # Final column is for the sum of masses
     mass_log_bins = np.linspace(-7, 0, N_MASS_BINS)
+    mass_bins = np.linspace(0., 0.1, N_MASS_BINS) # For plotting
 
     @property
     def logprior(self):

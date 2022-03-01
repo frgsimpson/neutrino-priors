@@ -10,14 +10,13 @@ from neutrinos.hierarchies import Hierarchy
 from inference.utils import load_posterior, save_posterior
 
 
-def get_likelihood_mu_sigma(data, hierarchy: Hierarchy, likeli: Optional[LikelihoodGrid] = None):
+def get_likelihood_mu_sigma(data, hierarchy: Hierarchy, n_samples: int):
     """ Span mu sigma grid and collect mass posterior along the way. """
 
-    if likeli is None:
-        likeli = get_default_grid()
+    likeli = get_default_grid(n_samples=n_samples)
 
     n_mu = len(likeli.muArray)
-    bin_edges = likeli.mass_log_bins
+    bin_edges = likeli.mass_bins
 
     for i, mu in enumerate(likeli.muArray):
         for j, sigma in enumerate(likeli.sigmaArray):
@@ -28,11 +27,11 @@ def get_likelihood_mu_sigma(data, hierarchy: Hierarchy, likeli: Optional[Likelih
             weights = np.exp(loglikeli)
 
             for n in range(3):
-                samples_posterior, _ = np.histogram(logsamples[:, n], bin_edges, weights=weights)
+                samples_posterior, _ = np.histogram(samples[:, n], bin_edges, weights=weights)
                 likeli.mass_posterior[:-1, n] += samples_posterior
 
-            log_sum_of_masses = np.log(np.sum(samples, axis=1))
-            sum_of_masses_posterior, _ = np.histogram(log_sum_of_masses, bin_edges, weights=weights)
+            sum_of_masses = np.sum(samples, axis=1)
+            sum_of_masses_posterior, _ = np.histogram(sum_of_masses, bin_edges, weights=weights)
             likeli.mass_posterior[:-1, 3] += sum_of_masses_posterior
 
             likeli.loglikelihood[i, j] = logsumexp(loglikeli) - np.log(likeli.n_samples)
@@ -71,7 +70,7 @@ def get_posterior(hierarchy, data, n_samples: int = N_DEFAULT_SAMPLES):
     try:
         posterior = load_posterior(hierarchy, data, n_samples)
     except FileNotFoundError:
-        posterior = get_likelihood_mu_sigma(data, hierarchy)
+        posterior = get_likelihood_mu_sigma(data, hierarchy, n_samples)
         save_posterior(hierarchy, data, posterior)
 
     return posterior
