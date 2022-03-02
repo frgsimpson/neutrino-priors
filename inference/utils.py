@@ -39,6 +39,16 @@ def get_savefile_name(hierarchy: Hierarchy, data: NeutrinoConstraint, n_samples:
     return path + prefix + 'likeli_' + hierarchy_str + '_' + sum_str + '_' + sample_str
 
 
+def get_ultranest_dir(hierarchy: Hierarchy, data: NeutrinoConstraint):
+    """ Directory used by ultranest, """
+
+    hierarchy_str = 'nh' if hierarchy == Hierarchy.Normal else 'ih'
+    sum_str = str(data.sum_of_masses_one_sigma)[:5]  # Max 5 sig fig
+
+    prefix = '' if data.sum_of_masses_offset == 0.else str(data.sum_of_masses_offset) + '_'
+    return "ultra_" + prefix + hierarchy_str + '_' + sum_str
+
+
 def print_figure(filename: str, path: str = './plots/'):
 
     plt.savefig(path + filename,

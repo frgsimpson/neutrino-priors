@@ -4,6 +4,8 @@ import numpy as np
 from neutrinos.constraints import NeutrinoConstraint
 from neutrinos.hierarchies import Hierarchy
 
+LOG_TWO_PI = np.log(2 * np.pi)
+
 
 def make_normalised_samples(n_samples: int):
     """ Create a base set of random samples drawn from a Gaussian prior to represent the three neutrino masses. """
@@ -100,4 +102,4 @@ def get_prior_from_samples(samples, bin_edges, plot_type):
 
 def log_pdf(measurement, data, error) -> np.ndarray:
     """ Faster than using official logpdf routines. """
-    return -0.5*((measurement - data)/error) ** 2 - np.log(error) - 0.5 * np.log(2 * np.pi)
+    return -0.5 * ((measurement - data)/error) ** 2 - np.log(error) - 0.5 * LOG_TWO_PI

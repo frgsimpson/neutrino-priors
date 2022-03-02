@@ -6,7 +6,8 @@ from inference.utils import print_figure
 from neutrinos.constraints import load_neutrino_constraints
 from neutrinos.hierarchies import Hierarchy
 
-SUM_OF_MASSES_ONE_SIGMA = np.array([0.089, 0.099, 0.12]) * 0.5
+N_SAMPLES = 10_000
+SUM_OF_MASSES_ONE_SIGMA = np.array([0.12, 0.102, 0.89]) * 0.5
 SUM_OF_MASSES_OFFSET = [0, 0, 0]  # Corresponding offsets
 LINESTYLES = ['-', '--', ':']
 COLOURS = ['b', 'r', 'k']
@@ -24,7 +25,7 @@ def make_mass_plot(log_mass: bool = False):
             data.sum_of_masses_offset = SUM_OF_MASSES_OFFSET[j]
             linestyle = LINESTYLES[j]
 
-            likeligrid = get_posterior(hierarchy, data)
+            likeligrid = get_posterior(hierarchy, data, n_samples=N_SAMPLES)
 
             for m in range(3):
                 y = likeligrid.mass_posterior[:, m]
@@ -32,8 +33,9 @@ def make_mass_plot(log_mass: bool = False):
                 if log_mass:
                     axes[i].plot(likeligrid.mass_log_bins, y, linestyle=linestyle, color=COLOURS[m])
                 else:
-                    mass = np.exp(likeligrid.mass_log_bins)
-                    y /= mass  # p(m) = p(log m) / m
+                    # mass = np.exp(likeligrid.mass_log_bins)
+                    # y /= mass  # p(m) = p(log m) / m
+                    mass = likeligrid.mass_bins
                     y /= np.sum(y)
                     axes[i].plot(mass, y, linestyle=linestyle, color=COLOURS[m])
 
