@@ -1,7 +1,8 @@
 import numpy as np
 
 from matplotlib import pyplot as plt
-from inference.ultranest_log import run_ultranest
+
+from inference.bilby_log import run_bilby
 from neutrinos.constraints import load_neutrino_constraints
 from neutrinos.hierarchies import Hierarchy
 
@@ -18,4 +19,4 @@ for i, hierarchy in enumerate(Hierarchy):
         data.sum_of_masses_one_sigma = upper_bound
         data.sum_of_masses_offset = SUM_OF_MASSES_OFFSET[j]
 
-        run_ultranest(hierarchy, data)
+        run_bilby(hierarchy, data)
