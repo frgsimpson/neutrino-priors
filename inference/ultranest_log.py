@@ -4,7 +4,6 @@ import numpy as np
 import ultranest as ultra
 from scipy.stats import norm
 from inference.sampling import log_pdf
-from inference.utils import get_savefile_name
 from neutrinos.constraints import load_neutrino_constraints, NeutrinoConstraint
 from neutrinos.hierarchies import Hierarchy
 
@@ -56,12 +55,14 @@ def evaluate_log_likelihood_of_parameters(param_vector):
     return loglikeli
 
 
-def run_ultranest(hierarchy: Hierarchy, data: NeutrinoConstraint):
+def run_ultranest(hierarchy: Hierarchy, data: NeutrinoConstraint, max_ncalls: int = 100_000):
 
-    run_name = get_savefile_name(hierarchy, data)
+    hierarchy_str = 'nh' if hierarchy == Hierarchy.Normal else 'ih'
+    sum_str = str(data.sum_of_masses_one_sigma)[:5]  # Max 5 sig fig
+    prefix = '' if data.sum_of_masses_offset == 0.else str(data.sum_of_masses_offset) + '_'
+    run_name = prefix + 'likeli_' + hierarchy_str + '_' + sum_str
     dir_name = "ultra_" + run_name
 
-    sampler = ultra.NestedSampler(PARAM_NAMES, evaluate_log_likelihood_of_parameters, prior_map, num_live_points=400,
-        log_dir=dir_name, resume='resume')
-    sampler.run()
-
+    sampler = ultra.ReactiveNestedSampler(PARAM_NAMES, evaluate_log_likelihood_of_parameters, prior_map,   # num_live_points=400,
+        log_dir=dir_name, resume='overwrite', ndraw_max=1_000)
+    sampler.run(max_ncalls=max_ncalls)
