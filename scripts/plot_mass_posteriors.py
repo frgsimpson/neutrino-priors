@@ -6,7 +6,7 @@ from inference.utils import print_figure
 from neutrinos.constraints import load_neutrino_constraints
 from neutrinos.hierarchies import Hierarchy
 
-N_SAMPLES = 10_000
+N_SAMPLES = 100_001
 SUM_OF_MASSES_ONE_SIGMA = np.array([0.089, 0.12, 0.102]) * 0.5
 SUM_OF_MASSES_OFFSET = [0, 0, 0]  # Corresponding offsets
 LINESTYLES = ['-', '--', ':']
