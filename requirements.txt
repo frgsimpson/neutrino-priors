@@ -2,5 +2,5 @@ numpy
 matplotlib
 scipy
 scikit-image
-ultranest
-
+bilby
+latex
