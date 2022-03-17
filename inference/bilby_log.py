@@ -43,13 +43,13 @@ class HierarchyLikelihood(bilby.Likelihood):
         data: array_like
             The data to analyse
         """
-        super().__init__(parameters={'mu': None, 'sigma': None, 'm1': None, 'm2': None, 'm3': None})
+        super().__init__(parameters={'logmu': None, 'sigma': None, 'm1q': None, 'm2q': None, 'm3q': None})
         self.data = data
         self.N = 3 # len(data)
 
     def log_likelihood(self):
         quantile_vector = np.array([self.parameters['m1q'], self.parameters['m2q'], self.parameters['m3q']])
-        log_masses = norm.ppf(quantile_vector, loc=self.parameters['mu'], scale=self.parameters['sigma'])
+        log_masses = norm.ppf(quantile_vector, loc=self.parameters['logmu'], scale=self.parameters['sigma'])
         mass_vector = np.exp(log_masses)
 
         if not np.all(np.diff(mass_vector) >= 0):
@@ -96,7 +96,7 @@ def evaluate_log_likelihood_of_parameters(param_vector):
 
 def get_bilby_priors():
 
-    priors = {'mu': bilby.prior.LogUniform(minimum=5e-4, maximum=0.3, name='mu', latex_label='\mu'),
+    priors = {'logmu': bilby.prior.Uniform(minimum=np.log(5e-4), maximum=np.log(0.3), name='logmu', latex_label='log \mu'),
               'sigma': bilby.prior.LogUniform(minimum=5e-3, maximum=20, name='sigma', latex_label='\sigma'),
               'm1q': bilby.prior.Uniform(minimum=0, maximum=1, name='m1q', latex_label='m1q'),
               'm2q': bilby.prior.Uniform(minimum=0, maximum=1, name='m2q', latex_label='m2q'),
@@ -104,18 +104,18 @@ def get_bilby_priors():
     return priors
 
 
-def run_bilby(hierarchy: Hierarchy, data: NeutrinoConstraint):
+def run_bilby(hierarchy: Hierarchy, data: NeutrinoConstraint, nlive: int = 1000):
 
     hierarchy_str = 'nh' if hierarchy == Hierarchy.Normal else 'ih'
     sum_str = str(data.sum_of_masses_one_sigma)[:5]  # Max 5 sig fig
     prefix = '' if data.sum_of_masses_offset == 0.else str(data.sum_of_masses_offset) + '_'
-    label = "bilby_" + prefix + 'likeli_' + hierarchy_str + '_' + sum_str
+    sample = "rwalk"
+    label = sample + str(nlive) + "_" + prefix + 'likeli_' + hierarchy_str + '_' + sum_str
 
-    #  Going to get psoteriors on the quantile, then need to do some post-processing
-
+    #  Going to get posteriors on the quantile, then need to do some post-processing
     likelihood = HierarchyLikelihood(data)
     priors = get_bilby_priors()
-    bilby.run_sampler(likelihood, priors, sampler="dynesty", nlive=500, label=label)
+    bilby.run_sampler(likelihood, priors, sampler="dynesty", nlive=nlive, label=label, bound="multi", sample=sample, dlogz=0.01)
 
 
 
