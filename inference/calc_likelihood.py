@@ -1,6 +1,4 @@
 import numpy as np
-from typing import Optional
-
 from scipy.special import logsumexp
 
 from inference.grids import get_default_grid, LikelihoodGrid, N_DEFAULT_SAMPLES
@@ -70,6 +68,7 @@ def get_posterior(hierarchy, data, n_samples: int = N_DEFAULT_SAMPLES):
     try:
         posterior = load_posterior(hierarchy, data, n_samples)
     except FileNotFoundError:
+        print('No save file found corresponding to ', data)
         posterior = get_likelihood_mu_sigma(data, hierarchy, n_samples)
         save_posterior(hierarchy, data, posterior)
 

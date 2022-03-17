@@ -2,6 +2,7 @@
 
 import numpy as np
 import ultranest as ultra
+from ultranest.stepsampler import MHSampler
 from scipy.stats import norm
 from inference.sampling import log_pdf
 from neutrinos.constraints import load_neutrino_constraints, NeutrinoConstraint
@@ -64,5 +65,5 @@ def run_ultranest(hierarchy: Hierarchy, data: NeutrinoConstraint, max_ncalls: in
     dir_name = "ultra_" + run_name
 
     sampler = ultra.ReactiveNestedSampler(PARAM_NAMES, evaluate_log_likelihood_of_parameters, prior_map,   # num_live_points=400,
-        log_dir=dir_name, resume='overwrite', ndraw_max=1_000)
+        log_dir=dir_name, resume='overwrite')
     sampler.run(max_ncalls=max_ncalls)
