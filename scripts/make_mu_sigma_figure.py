@@ -11,6 +11,7 @@ from neutrinos.constraints import load_neutrino_constraints
 from inference.grids import LikelihoodGrid
 from neutrinos.hierarchies import Hierarchy
 
+N_SAMPLES = 100_001
 KERNEL_WIDTH = 5.  # How many sigma to smooth across
 SMOOTH_SIGMA = 2   # How wide to smooth
 COLOR_RANGE = 10   # How far does the log likelihood fall before it becomes black?
@@ -25,7 +26,7 @@ def make_mu_sigma_figures(sum_of_masses_one_sigma=0.0445):
 
     posterior_list = []
     for i, hierarchy in enumerate(Hierarchy):
-        posterior = get_posterior(hierarchy, data)
+        posterior = get_posterior(hierarchy, data, n_samples=N_SAMPLES)
         posterior_list.append(posterior)
 
     print_evidence(posterior_list)
@@ -92,3 +93,4 @@ def apply_smoothing(image, smooth_sigma):
 
 if __name__ == '__main__':
     make_mu_sigma_figures()
+    make_mu_sigma_figures(0.06)

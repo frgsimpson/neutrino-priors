@@ -53,7 +53,7 @@ def get_ultranest_dir(hierarchy: Hierarchy, data: NeutrinoConstraint):
 
 def print_figure(filename: str, path: str = './plots/'):
 
-    plt.savefig(path + filename,
+    plt.savefig(path + filename + '.png',
                 dpi=300,
                 bbox_inches='tight',
                 pad_inches=0)
