@@ -5,11 +5,12 @@ from inference.calc_likelihood import get_prior_on_masses
 from inference.grids import get_default_grid
 import numpy as np
 
-N_DEFAULT_SAMPLES = 1_000  # 1_000_000  # Samples per mu-sigma bin
+N_DEFAULT_SAMPLES = 1_000_000  # Samples per mu-sigma bin
 N_MASS_BINS = 100
 EPSILON = 1e-10
-MIN_PLOT_VAL = -10  # How low data becomes black
 PLOT_TYPES = ['heavylight', 'heavymedium', 'mediumlight']
+LOG_PROB = False
+MIN_PLOT_VAL = -10 if LOG_PROB else 0.  # How low data becomes black
 
 # Need fine grained mu since it's log distributed
 likeli = get_default_grid(n_mu=1_000, n_sigma=30, log_mass_spacing=True)
@@ -20,7 +21,9 @@ for plot_type in PLOT_TYPES:
     prior_grid = get_prior_on_masses(likeli, plot_type=plot_type, bin_edges=bin_edges)
     log_prior_grid = np.log(prior_grid + EPSILON)
 
-    im = plt.imshow(log_prior_grid, cmap="hot", vmin=MIN_PLOT_VAL, origin='lower', extent=[bin_edges[0], bin_edges[-1], bin_edges[0], bin_edges[-1]])
+    prior_values = log_prior_grid if LOG_PROB else prior_grid
+
+    im = plt.imshow(prior_values, cmap="hot", vmin=MIN_PLOT_VAL, origin='lower', extent=[bin_edges[0], bin_edges[-1], bin_edges[0], bin_edges[-1]])
     cbar = plt.colorbar(im)
 
     if plot_type == 'heavymedium':

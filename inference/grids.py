@@ -3,9 +3,10 @@ from dataclasses import dataclass
 
 import numpy as np
 
-N_DEFAULT_SAMPLES = 100_000
-N_MASS_BINS = 100
-
+N_DEFAULT_SAMPLES = 10_000
+N_MASS_BINS = 200  # For binning the posterior - 200 bins from 0-0.2 eV
+MAX_MASS_PLOT = 0.2
+N_PRIOR_BINS = 256  # For binning mu and sigma prior grid
 
 @dataclass
 class LikelihoodGrid:
@@ -18,7 +19,7 @@ class LikelihoodGrid:
     prior_power: int = 0
     mass_posterior = np.zeros((N_MASS_BINS, 4))  # Final column is for the sum of masses
     mass_log_bins = np.linspace(-7, 0, N_MASS_BINS)
-    mass_bins = np.linspace(0., 0.1, N_MASS_BINS) # For plotting
+    mass_bins = np.linspace(0., MAX_MASS_PLOT, N_MASS_BINS)  # For plotting
 
     @property
     def logprior(self):
@@ -33,7 +34,7 @@ class LikelihoodGrid:
         return self.loglikelihood + self.logprior
 
 
-def get_default_grid(n_sigma: int = 100, n_mu: int = 101, n_samples: int = N_DEFAULT_SAMPLES, log_mass_spacing: bool = True):
+def get_default_grid(n_sigma: int = N_PRIOR_BINS, n_mu: int = N_PRIOR_BINS, n_samples: int = N_DEFAULT_SAMPLES, log_mass_spacing: bool = True):
 
     muMIN = 5e-4
     muMAX = 0.3

@@ -30,13 +30,15 @@ def get_savefile_name(hierarchy: Hierarchy, data: NeutrinoConstraint, n_samples:
     """ Store data in file depending on the hierarchy, sum constraint, """
 
     hierarchy_str = 'nh' if hierarchy == Hierarchy.Normal else 'ih'
+    split_str = '' if data.m21_sqr == 7.42e-5 else 'noSK_'
+
     sum_str = str(data.sum_of_masses_one_sigma)[:5]  # Max 5 sig fig
     sample_str = str(n_samples)
 
     prefix = '' if data.sum_of_masses_offset == 0.else str(data.sum_of_masses_offset) + '_'
     path = './likelihoods/'
 
-    return path + prefix + 'likeli_' + hierarchy_str + '_' + sum_str + '_' + sample_str
+    return path + prefix + 'likeli_' + split_str + hierarchy_str + '_' + sum_str + '_' + sample_str
 
 
 def get_ultranest_dir(hierarchy: Hierarchy, data: NeutrinoConstraint):
@@ -51,7 +53,7 @@ def get_ultranest_dir(hierarchy: Hierarchy, data: NeutrinoConstraint):
 
 def print_figure(filename: str, path: str = './plots/'):
 
-    plt.savefig(path + filename,
+    plt.savefig(path + filename + '.png',
                 dpi=300,
                 bbox_inches='tight',
                 pad_inches=0)
